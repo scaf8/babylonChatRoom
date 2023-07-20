@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-bottom: 400px;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .logo {
+            margin: 0 20px;
+        }
+
+        .logo img {
+            width: 60%;
+            max-width: 300px;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 70px 0;
+        }
+
+        form {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form div {
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        form span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form input[type="text"],
+        form input[type="password"] {
+            width: 96%;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: rgb(0, 0, 0);
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+           <!-- <div th:if="${isLogged}">
+                <span th:text="${username}"></span>
+                <a href="/logout" class="login-link">Logout</a>
+            </div>
+            <div th:unless="${isLogged}">
+                <a href="/login" class="login-link">Login</a>
+            </div> -->
+    </header>
+
+    <h1>Login</h1>
+    <form th:action="@{/login}" method="POST">
+        <div>
+            <span>Username:</span>
+            <span><input name="username" type="text" required /></span>
+        </div>
+        <div>
+            <span>Password:</span>
+            <span><input name="password" type="password" required /></span>
+        </div>
+        <div>
+            <span th:if="${param.error != null}" style="color: red;">Username o password errati</span>
+        </div>
+        <div>
+            <span><button type="submit">Login</button></span>
+        </div>
+    </form>
+    <div class="register-link">
+        <a href="/register">Non hai un account? Registrati</a>
+    </div>
+</body>
+
+</html>

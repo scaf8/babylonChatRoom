@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+      <title>Spring Boot WebSocket Chat Application</title>
+      <link rel="stylesheet" href="/css/main.css" />
+      <style>
+		  header {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        header a {
+            color: white;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+	  </style>
+  </head>
+  <body>
+    <noscript>
+      <h2>Sorry! Your browser doesn't support Javascript</h2>
+    </noscript>
+    
+    <header>
+		<div th:if="${isLogged}">
+                <span th:text="${username}"></span>
+                <a href="/logout" class="login-link">Logout</a>
+            </div>
+            <!--<div th:unless="${isLogged}">
+                <a href="/login" class="login-link">Login</a>
+            </div>-->
+	</header>
+
+    <div id="username-page">
+        <div class="username-page-container">
+            <h1 class="title">Benvenuto</h1>
+            <div th:if="${isLogged}">
+				<form id="usernameForm" name="usernameForm">
+                <div class="form-group">
+                    <input type="hidden" id="name" th:value="${username}"/>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="accent username-submit">Start Chatting</button>
+                </div>
+            </form>
+			</div>
+			<div th:unless="${isLogged}">
+                <a href="/login"><button type="submit" class="accent username-submit">Effetua il Login per cominciare</button></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-page" class="hidden">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Spring WebSocket Chat Demo</h2>
+            </div>
+            <div class="connecting">
+                Connecting...
+            </div>
+            <ul id="messageArea" >
+
+				
+            </ul>
+            <form id="messageForm" name="messageForm" nameform="messageForm">
+                <div class="form-group">
+                    <div class="input-group clearfix">
+                        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control" required/>
+                        <button type="submit" class="primary">Send</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
