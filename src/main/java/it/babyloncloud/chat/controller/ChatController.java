@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import it.babyloncloud.chat.controller.service.CredentialsService;
 import it.babyloncloud.chat.controller.service.MessageService;
+import it.babyloncloud.chat.controller.service.UserService;
 import it.babyloncloud.chat.filter.MessageFilter;
 import it.babyloncloud.chat.model.Credentials;
 import it.babyloncloud.chat.model.Message;
@@ -23,6 +24,8 @@ public class ChatController {
 	
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private UserService userService;
 	@Autowired
 	private CredentialsService credentialsService;
 	@Autowired
@@ -32,20 +35,22 @@ public class ChatController {
 	@SendTo("/topic/public")
 	public Message sendMessage(@Payload Message chatMessage, @Header("username") String username) {
 		float probability = messageFilter.classifyMessage(chatMessage.getContent());
-		if (probability < 0.5) {
-            // Messaggio non offensivo
-			this.saveMessage(chatMessage, username);
-        } else {
-            // Messaggio offensivo
-        	chatMessage.setContent("<offensive message deleted>");
-        	this.saveMessage(chatMessage, username);
-        }
+		System.out.println(probability);
+		this.saveMessage(chatMessage, username, probability);
 	    return chatMessage;
 	}
 	
-	private void saveMessage(Message chatMessage, String username) {
-		Credentials credentials = this.credentialsService.getCredentials(username);
-		chatMessage.setSender(credentials.getUser());
+	private void saveMessage(Message chatMessage, String username, float probability) {
+		User user = this.credentialsService.getCredentials(username).getUser();
+		if(probability > 0.7) {		// Messaggio offensivo?
+			chatMessage.setContent("<offensive message deleted>");
+			int newStrikes = user.getStrikes() +1;
+			user.setStrikes(newStrikes);
+			if(newStrikes >= 5)
+				user.setBlocked(true);
+			this.userService.saveUser(user);
+		}
+		chatMessage.setSender(user);
 		chatMessage.setTimestamp(LocalDateTime.now());
 		this.messageService.saveMessage(chatMessage);
 	}
@@ -68,5 +73,6 @@ public class ChatController {
 		this.messageService.saveMessage(chatMessage);
 		return chatMessage;
 	}
+	
 
 }

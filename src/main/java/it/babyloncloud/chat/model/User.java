@@ -23,15 +23,19 @@ public class User {
 	@Column(nullable = false)
 	private String name;
 	private String surname;
-	@Column(nullable = false)
+	@Column(unique = true, nullable = false)
 	private String email;
 	@Column(nullable = false)
 	private String username;
+	private Integer strikes;
+	private Boolean blocked;
 	
 	@ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
 	private Set<Room> rooms;
 	
 	public User() {
+		this.strikes = 0;
+		this.setBlocked(false);
 		this.rooms = new HashSet<>();
 	}
 	
@@ -64,6 +68,18 @@ public class User {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public Integer getStrikes() {
+		return strikes;
+	}
+	public void setStrikes(Integer strikes) {
+		this.strikes = strikes;
+	}
+	public Boolean getBlocked() {
+		return blocked;
+	}
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
 	}
 
 	@Override

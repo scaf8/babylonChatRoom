@@ -109,6 +109,7 @@
         </div>
         <div>
             <span th:if="${param.error != null}" style="color: red;">Username o password errati</span>
+            <span th:if="${blockedMessage}" th:text="${blockedMessage}" style="color: red;">Blocked</span>
         </div>
         <div>
             <span><button type="submit">Login</button></span>

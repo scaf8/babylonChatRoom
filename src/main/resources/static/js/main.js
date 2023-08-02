@@ -124,6 +124,19 @@ fetch('/rest/messages')
   });
 
 
+function checkUserStatus() {
+	if(username){
+  	// Effettua una chiamata AJAX al server per ottenere l'oggetto User in base all'username
+  	$.get("/checkUserStatus", { username: username }, function (blocked) {
+    	// Verifica lo stato dell'utente ottenuto
+    	if (blocked) {
+    		window.location.reload(true);
+    	}
+  	});
+  	}
+}
+  
+setInterval(checkUserStatus, 10000); // 5000 millisecondi = 5 secondi
 
 
 function onMessageReceived(payload) {
