@@ -43,7 +43,7 @@ public class ChatController {
 	private void saveMessage(Message chatMessage, String username, float probability) {
 		User user = this.credentialsService.getCredentials(username).getUser();
 		if(probability > 0.7) {		// Messaggio offensivo?
-			chatMessage.setContent("<offensive message deleted>");
+			chatMessage.setType(MessageType.STRIKE);
 			int newStrikes = user.getStrikes() +1;
 			user.setStrikes(newStrikes);
 			if(newStrikes >= 5)

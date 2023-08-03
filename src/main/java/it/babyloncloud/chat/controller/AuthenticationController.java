@@ -25,13 +25,14 @@ public class AuthenticationController {
 	@Autowired
 	private SessionData sessionData;
 	
-	@GetMapping("/checkUserStatus")
+	
+	@GetMapping("/getUserStrikes")
 	@ResponseBody
-	public boolean checkUserStatus(@RequestParam String username) {
-		Credentials credentials = this.credentialsService.getCredentials(username);
-		if(credentials != null)
-			return credentials.getUser().getBlocked();
-		return false;
+	public int getUserStrikes(@RequestParam String username) {
+		User user = this.credentialsService.getCredentials(username).getUser();
+		if(user != null)
+			return user.getStrikes();
+		return 0;
 	}
 
 	@GetMapping(value = "/register") 
@@ -98,30 +99,5 @@ public class AuthenticationController {
 
 		return "formRegisterUser.html";
 	}
-
-//	private boolean checkUser(Model model) {
-//		boolean isLogged = false;
-//
-//		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-//		Credentials inputCredentials = this.credentialsService.getCredentials(loggedInUser.getName());
-//		if(inputCredentials != null) {
-//			if(!inputCredentials.getUser().getBlocked()) {
-//				isLogged = true;
-//				model.addAttribute("username", loggedInUser.getName());
-//			}
-//		}
-//		model.addAttribute("isLogged", isLogged);
-//		return isLogged;
-//	}
-	
-//	private void checkUser(Model model) {
-//		boolean isLogged = false;
-//		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
-//		if(this.credentialsService.getCredentials(loggedInUser.getName()) != null) {
-//			isLogged = true;
-//			model.addAttribute("username", loggedInUser.getName());
-//		}
-//		model.addAttribute("isLogged", isLogged);
-//	}
 
 }

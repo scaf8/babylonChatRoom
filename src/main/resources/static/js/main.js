@@ -10,6 +10,7 @@ var connectingElement = document.querySelector('.connecting');
 
 var stompClient = null;
 var username = null;
+var offensiveMessage = "<offensive message deleted>";
 
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -94,7 +95,14 @@ function renderMessages(messages) {
     }
 
     var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
+    var messageText = null;
+    // controlla se il messaggio è offensivo
+    if(message.type === 'STRIKE') {
+		messageText = document.createTextNode(offensiveMessage);
+  	}
+  	else {
+		messageText = document.createTextNode(message.content);
+	}
     textElement.appendChild(messageText);
 
     messageElement.appendChild(textElement);
@@ -124,21 +132,6 @@ fetch('/rest/messages')
   });
 
 
-function checkUserStatus() {
-	if(username){
-  	// Effettua una chiamata AJAX al server per ottenere l'oggetto User in base all'username
-  	$.get("/checkUserStatus", { username: username }, function (blocked) {
-    	// Verifica lo stato dell'utente ottenuto
-    	if (blocked) {
-    		window.location.reload(true);
-    	}
-  	});
-  	}
-}
-  
-setInterval(checkUserStatus, 10000); // 5000 millisecondi = 5 secondi
-
-
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
@@ -165,7 +158,29 @@ function onMessageReceived(payload) {
     }
 
     var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
+    
+    var messageText = null;
+    // controlla se il messaggio è offensivo
+    if(message.type === 'STRIKE') {
+		messageText = document.createTextNode(offensiveMessage);
+		// controlla se l'utente corrente ne è l'autore
+		if(username === message.sender.username) {
+			// Effettua una chiamata AJAX al server per ottenere il numero di strikes dell'utente
+  			$.get("/getUserStrikes", { username: username }, function (strikes) {
+    		if (strikes === 4) {
+    			$('#strikeModal').modal('show');
+    		}
+    		// se l'utente ha superato il limite, ricarica la pagina per farlo uscire
+    		if (strikes >= 5) {
+				window.location.reload(true);
+			}
+  			});
+		}
+  	}
+  	else {
+		messageText = document.createTextNode(message.content);
+	}
+    
     textElement.appendChild(messageText);
 
     messageElement.appendChild(textElement);
