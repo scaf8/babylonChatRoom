@@ -13,6 +13,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import it.babyloncloud.chat.controller.service.CredentialsService;
+import it.babyloncloud.chat.controller.service.MessageService;
 import it.babyloncloud.chat.model.Message;
 import it.babyloncloud.chat.model.User;
 
@@ -25,6 +26,8 @@ public class WebSocketEventListener {
     private SimpMessageSendingOperations messagingTemplate;
     @Autowired
     private CredentialsService credentialsService;
+    @Autowired
+    private MessageService messageService;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -45,6 +48,7 @@ public class WebSocketEventListener {
 			chatMessage.setTimestamp(LocalDateTime.now());
 			String username = this.credentialsService.getUsernameByUserId(user.getId());
 			chatMessage.setContent(username + " left!");
+			this.messageService.saveMessage(chatMessage);
             messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
     }
